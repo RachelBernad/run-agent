@@ -1,0 +1,7 @@
+fastmcp
+httpx
+python-dotenv
+garminconnect
+pytest
+pytest-asyncio
+numpy
