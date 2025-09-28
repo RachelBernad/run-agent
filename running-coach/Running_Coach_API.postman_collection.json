@@ -1,0 +1,452 @@
+{
+	"info": {
+		"_postman_id": "running-coach-api-collection",
+		"name": "Running Coach API",
+		"description": "Collection for testing the Running Coach FastAPI backend endpoints with MCP integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "running-coach"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Check if the API is running and healthy"
+			},
+			"response": []
+		},
+		{
+			"name": "Get API Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Get API information and available endpoints"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Program - 5K in 8 weeks",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"goal_km\": 5.0,\n  \"time_weeks\": 8\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/programs",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs"
+					]
+				},
+				"description": "Create a running program for 5km goal in 8 weeks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Program - 10K in 12 weeks",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"goal_km\": 10.0,\n  \"time_weeks\": 12\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/programs",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs"
+					]
+				},
+				"description": "Create a running program for 10km goal in 12 weeks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Program - Half Marathon in 16 weeks",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"goal_km\": 21.1,\n  \"time_weeks\": 16\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/programs",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs"
+					]
+				},
+				"description": "Create a running program for half marathon (21.1km) in 16 weeks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Program - Marathon in 20 weeks",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"goal_km\": 42.2,\n  \"time_weeks\": 20\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/programs",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs"
+					]
+				},
+				"description": "Create a running program for marathon (42.2km) in 20 weeks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Program - Invalid Goal (too small)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"goal_km\": 0.5,\n  \"time_weeks\": 8\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/programs",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs"
+					]
+				},
+				"description": "Test validation - goal too small (should fail)"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Program - Invalid Time (too short)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"goal_km\": 5.0,\n  \"time_weeks\": 0\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/programs",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs"
+					]
+				},
+				"description": "Test validation - time too short (should fail)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Program History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/history",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"history"
+					]
+				},
+				"description": "Retrieve all previously generated programs"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Specific Program by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/programs/{{program_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs",
+						"{{program_id}}"
+					]
+				},
+				"description": "Get a specific program by its ID (replace {{program_id}} with actual ID from history)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Non-existent Program",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/programs/non-existent-id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs",
+						"non-existent-id"
+					]
+				},
+				"description": "Test error handling - get program that doesn't exist (should return 404)"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Program by ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/programs/{{program_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"programs",
+						"{{program_id}}"
+					]
+				},
+				"description": "Delete a specific program by its ID (replace {{program_id}} with actual ID)"
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Plan - Default 30 days",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"current_date\": \"2024-01-15\",\n  \"days_back\": 30\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/analyze-plan",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"analyze-plan"
+					]
+				},
+				"description": "Analyze running plan progress with default 30 days of Garmin data"
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Plan - 7 days",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"current_date\": \"2024-01-15\",\n  \"days_back\": 7\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/analyze-plan",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"analyze-plan"
+					]
+				},
+				"description": "Analyze running plan progress with 7 days of Garmin data"
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Plan - 60 days",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"current_date\": \"2024-01-15\",\n  \"days_back\": 60\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/analyze-plan",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"analyze-plan"
+					]
+				},
+				"description": "Analyze running plan progress with 60 days of Garmin data"
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Plan - Invalid Program ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"program_id\": \"non-existent-id\",\n  \"current_date\": \"2024-01-15\",\n  \"days_back\": 30\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/analyze-plan",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"analyze-plan"
+					]
+				},
+				"description": "Test error handling - analyze plan with non-existent program ID (should return 404)"
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Plan - Invalid Date Format",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"current_date\": \"invalid-date\",\n  \"days_back\": 30\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/analyze-plan",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"analyze-plan"
+					]
+				},
+				"description": "Test validation - analyze plan with invalid date format (should return 400)"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "program_id",
+			"value": "",
+			"type": "string",
+			"description": "Replace with actual program ID from history response"
+		}
+	]
+}
