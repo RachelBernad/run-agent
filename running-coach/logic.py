@@ -13,8 +13,6 @@ from settings import (
 )
 from schemas import ProgramRequest, ProgramResponse, PlanAnalysisRequest, PlanAnalysisResponse
 from llm_service import RunningCoachLLM
-from optimized_llm_service import optimized_llm_service
-from activity_summarizer import activity_summarizer
 # Removed GarminMCPClient import - using MCP client from app.state instead
 
 logger = logging.getLogger(__name__)
@@ -27,25 +25,20 @@ class RunningCoachLogic:
         """Initialize the running coach logic."""
         self.programs_memory: Dict[str, ProgramResponse] = {}
         self.llm_service = RunningCoachLLM()
-        self.optimized_llm_service = optimized_llm_service
         # MCP client will be accessed from app.state
         logger.info("RunningCoachLogic initialized")
     
-    async def generate_program(self, request: ProgramRequest, mcp_client=None, use_optimized: bool = True) -> ProgramResponse:
+    async def generate_program(self, request: ProgramRequest, mcp_client=None) -> ProgramResponse:
         try:
-            logger.info(f"Generating {'optimized' if use_optimized else 'standard'} program for {request.goal_km}km in {request.time_weeks} weeks")
+            logger.info(f"Generating LLM-based program for {request.goal_km}km in {request.time_weeks} weeks")
             
             # Get recent runs from Garmin for context
             recent_runs = await self._get_recent_runs_summary(mcp_client=mcp_client)
             
-            if use_optimized:
-                # Use optimized LLM service with caching and template generation
-                program = await self.optimized_llm_service.generate_program_optimized(request, recent_runs)
-            else:
-                # Use standard LLM service
-                program = await self.llm_service.generate_program_with_context(request, recent_runs)
+            # Use LLM service with run context
+            program = await self.llm_service.generate_program_with_context(request, recent_runs)
             
-            # Save to memory (optimized service handles its own caching)
+            # Save to memory
             self._save_program(program)
             
             logger.info(f"{LOG_PROGRAM_GENERATED} - ID: {program.program_id}")

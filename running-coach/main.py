@@ -138,7 +138,7 @@ async def root():
     summary="Create a new running program",
     description="Generate a personalized running program based on goal distance and time frame"
 )
-async def create_program(request: ProgramRequest, use_optimized: bool = True) -> ProgramResponse:
+async def create_program(request: ProgramRequest) -> ProgramResponse:
     """
     Create a new running program.
     
@@ -156,7 +156,7 @@ async def create_program(request: ProgramRequest, use_optimized: bool = True) ->
         
         # Generate program using business logic
         mcp_client = getattr(app.state, 'mcp_client', None)
-        program = await running_coach.generate_program(request, mcp_client, use_optimized)
+        program = await running_coach.generate_program(request, mcp_client)
         
         logger.info(LOG_PROGRAM_SAVED, extra={"program_id": program.program_id})
         
@@ -331,79 +331,6 @@ async def analyze_plan(request: PlanAnalysisRequest) -> PlanAnalysisResponse:
         )
 
 
-@app.post(
-    "/programs/fast",
-    response_model=ProgramResponse,
-    status_code=status.HTTP_201_CREATED,
-    tags=["programs"],
-    summary="Create a running program (fast mode)",
-    description="Generate a personalized running program using optimized template-based approach"
-)
-async def create_program_fast(request: ProgramRequest) -> ProgramResponse:
-    """Create a new running program using fast template-based generation."""
-    try:
-        logger.info(f"Fast program generation requested - {request.goal_km}km in {request.time_weeks} weeks")
-        
-        mcp_client = getattr(app.state, 'mcp_client', None)
-        recent_runs = await running_coach._get_recent_runs_summary(mcp_client=mcp_client)
-        
-        program = await running_coach.optimized_llm_service.generate_program_fast(request, recent_runs)
-        
-        logger.info(f"Fast program generated - ID: {program.program_id}")
-        return program
-        
-    except Exception as e:
-        logger.error(f"Fast program generation failed: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Fast program generation failed"
-        )
-
-
-@app.get(
-    "/cache/stats",
-    response_model=dict,
-    tags=["cache"],
-    summary="Get cache statistics",
-    description="Retrieve cache statistics and performance metrics"
-)
-async def get_cache_stats():
-    """Get cache statistics."""
-    try:
-        stats = running_coach.optimized_llm_service.get_cache_stats()
-        return {
-            "cache_stats": stats,
-            "memory_programs": len(running_coach.programs_memory)
-        }
-    except Exception as e:
-        logger.error(f"Failed to get cache stats: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve cache statistics"
-        )
-
-
-@app.delete(
-    "/cache",
-    status_code=status.HTTP_204_NO_CONTENT,
-    tags=["cache"],
-    summary="Clear cache",
-    description="Clear all cached programs"
-)
-async def clear_cache():
-    """Clear all cached programs."""
-    try:
-        running_coach.optimized_llm_service.clear_cache()
-        running_coach.clear_memory()
-        logger.info("Cache cleared successfully")
-    except Exception as e:
-        logger.error(f"Failed to clear cache: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to clear cache"
-        )
-
-
 @app.get(
     "/health",
     response_model=dict,
@@ -413,12 +340,10 @@ async def clear_cache():
 )
 async def health_check():
     """Health check endpoint."""
-    cache_stats = running_coach.optimized_llm_service.get_cache_stats()
     return {
         "status": "healthy",
         "version": settings.app_version,
-        "programs_in_memory": len(running_coach.programs_memory),
-        "cache_stats": cache_stats
+        "programs_in_memory": len(running_coach.programs_memory)
     }
 
 
